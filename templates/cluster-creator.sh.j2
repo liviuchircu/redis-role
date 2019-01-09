@@ -32,4 +32,8 @@ for IP in $HOSTS_IPS; do
   HOSTS="$HOSTS $IP:$PORT"
 done
 
+{% if redis_version | version_compare('5.0', ">=") %}
+yes "yes" | redis-cli --cluster create $HOSTS $REPLICAS
+{% else %}
 yes "yes" | redis-trib create $REPLICAS $HOSTS
+{% endif %}

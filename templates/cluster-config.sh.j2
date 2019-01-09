@@ -8,12 +8,18 @@ HOSTS_IPS="{% for h in ansible_play_hosts %}
 {{ hostvars[h]['ansible_default_ipv4']['address'] }} {% endfor %}"
 
 {% if redis_cluster_replicas != 0 %}
+{% if redis_version | version_compare('5.0', ">=") %}
+REPLICAS="--cluster-replicas {{ redis_cluster_replicas }}"
+{% else %}
 REPLICAS="--replicas {{ redis_cluster_replicas }}"
+{% endif %}
 {% endif %}
 REDIS_PATH={{ redis_install_path }}
 REDIS_CONF={{ redis_conf_path }}
 NODE_CONF_FILE={{ redis_confs['cluster-config-file'] }}
 
+{% if redis_version | version_compare('5.0', "<") %}
 redis-trib () {
  $REDIS_PATH/src/redis-trib.rb $@
 }
+{% endif %}

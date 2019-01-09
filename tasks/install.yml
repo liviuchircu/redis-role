@@ -30,7 +30,6 @@
     mode: 0644
   when: redis_is_installed == false and redis_confs.logfile is defined
 
-
 - name: REDIS | Remove instance from cluster
   command: "{{ redis_conf_path }}/upgrading-helper.sh delete"
   when:
@@ -89,22 +88,9 @@
     chdir: "{{ redis_install_path }}"
   when: redis_is_installed == False or redis_install_new_version == True
 
-- name: REDIS | Make test
-  make:
-    chdir: "{{ redis_install_path }}"
-    target: test
-  when: redis_is_installed == False or redis_install_new_version == True
-
 - name: REDIS | Make install
   make:
     chdir: "{{ redis_install_path }}"
     target: install
   become: yes
   when: redis_is_installed == False or redis_install_new_version == True
-
-- name: REDIS | install redis gem
-  gem:
-    name: redis
-    state: present
-  become: yes
-  when: redis_mode == 'cluster'
