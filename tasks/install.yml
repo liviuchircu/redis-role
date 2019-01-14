@@ -88,6 +88,13 @@
     chdir: "{{ redis_install_path }}"
   when: redis_is_installed == False or redis_install_new_version == True
 
+- name: REDIS | Make test
+  make:
+    chdir: "{{ redis_install_path }}"
+    target: test
+  when: redis_is_installed == False or redis_install_new_version == True
+  ignore_errors: yes
+
 - name: REDIS | Make install
   make:
     chdir: "{{ redis_install_path }}"
